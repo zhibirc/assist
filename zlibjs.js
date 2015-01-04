@@ -1,27 +1,27 @@
 /** remove() method for DOM-elements. */
-Element.prototype.remove = function() {
-        this.parentElement.removeChild(this);
-    };
+Element.prototype.remove = function () {
+    this.parentElement.removeChild(this);
+};
 
 /** Implement last() method for collections of DOM-elements. */
- NodeList.prototype.last = HTMLCollection.prototype.last = function() {
-        return this[this.length - 1];
-    };
+NodeList.prototype.last = HTMLCollection.prototype.last = function () {
+    return this[this.length - 1];
+};
 
 /** Function that fixes a case when TextNode returns instead of HTML element (in FF at least). */
-    function getFirstChild(elem) {
-        var firstChild = elem.firstChild;
+function getFirstChild(elem) {
+    var firstChild = elem.firstChild;
 
-        while (firstChild && firstChild.nodeType !== 1) {
-            firstChild = firstChild.nextSibling;
-        }
-
-        return firstChild;
+    while (firstChild && firstChild.nodeType !== 1) {
+        firstChild = firstChild.nextSibling;
     }
+
+    return firstChild;
+}
 
 /** Simplify standard debug method to shortest 'log'. Also this is a good example of a bad practice - change basic prototypes. We overwrite the Math.log() method, better use '_log'. */
 if (typeof console !== 'undefined' && typeof console.log !== 'undefined') {
-    Object.prototype.log = function() {
+    Object.prototype.log = function () {
         console.log.apply(console, arguments);
     };
 }
@@ -30,20 +30,24 @@ if (typeof console !== 'undefined' && typeof console.log !== 'undefined') {
 if (typeof console !== 'undefined' && Object.isExtensible(console)) {
     console.store = console.store || {};
     console.store.basket = console.store.basket || '';
-    console.store.__defineSetter__('s', function(msg) { return this.basket +=
-        /* optionally: (new Date).getTime() + */ msg + ';\n'; });
-    console.store.__defineGetter__('s', function() { alert(this.basket); });
+    console.store.__defineSetter__('s', function (msg) {
+        return this.basket +=
+            /* optionally: (new Date).getTime() + */ msg + ';\n';
+    });
+    console.store.__defineGetter__('s', function () {
+        alert(this.basket);
+    });
 }
 
 /**
  * @author Addi Osmani
  * Adding outline borders to each element on the page.
  */
-(function(a){
+(function (a) {
     [].forEach.call(
         document.querySelectorAll(a),
-        function(b) {
-            b.style.outline = '1px solid #' + (~~(Math.random()*(1<<24))).toString(16)
+        function (b) {
+            b.style.outline = '1px solid #' + (~~(Math.random() * (1 << 24))).toString(16)
         }
     )
 })('*');
@@ -52,7 +56,7 @@ if (typeof console !== 'undefined' && Object.isExtensible(console)) {
  * @author zhibirc
  * Multiply string N-times - first edition.
  */
-String.prototype.multiChar = function(multi) {
+String.prototype.multiChar = function (multi) {
     for (var i = multi, str = ''; i--; str += this);
     return str;
 };
@@ -61,18 +65,18 @@ String.prototype.multiChar = function(multi) {
  * @author zhibirc
  * Multiply string N-times - second edition.
  */
-String.prototype.multiChar = function(multi) {
-	return new Array(++multi).join(this);
+String.prototype.multiChar = function (multi) {
+    return new Array(++multi).join(this);
 };
 
 /**
  * @author zhibirc
  * Implement well known and standard behaviour of constants.
  */
-var CONST = (function() {
+var CONST = (function () {
     var constStore = {};
 
-    return function(name, value) {
+    return function (name, value) {
         if (typeof value === 'undefined') {
             return constStore[name];
         } else {
@@ -87,22 +91,18 @@ var CONST = (function() {
 
 /**
  * @author zhibirc
- * Multifunctional event installer on DOM elements.
+ * Complex event installer on DOM elements.
  */
 function addHandler(elems, actions) {
-    'use strict';
-
-    var errors = ['Wrong call! Properly syntax: addHandler(\'element_0, element_1, ..., element_N\', { event_0: callback_0, event_1: callback_1, ..., event_N: callback_N})'],
+    var errors = ['Wrong invocation! Properly syntax: addHandler([element_0, ..., element_N], { event_0: callback_0, ..., event_N: callback_N})'],
         elem;
-
-    /** The aim of this approach is unobtrusively display an error (and return particular marker) without panic, because wrong call may be no matter for the main functionality. */
-    if (arguments.length !== 2 || {}.toString.call(elems).slice(8, -1) !== 'Array' || !(actions instanceof Object)) {
+    /** The aim of this approach is unobtrusively display an error (and return particular marker) without panic, because wrong call may be no matter for other functionality. */
+    if (arguments.length !== 2 || !Array.isArray(elems) || !(actions instanceof Object)) {
         if (typeof console !== 'undefined' && typeof console.warn !== 'undefined') {
             console.warn(errors[0]);
         }
         return 0;
     }
-
     for (var i = elems.length; i--;) {
         elem = elems[i];
         for (var event in actions) {
@@ -124,7 +124,7 @@ function addHandler(elems, actions) {
  * PHP function number_format in JS.
  */
 function numberFormat(value, decimal, delim, thousands_sep) {
-'use strict';
+    'use strict';
     if (typeof value !== 'number' || !isFinite(value)) {
         throw new TypeError('Parameter "value" must be a real Number!');
     }
@@ -148,32 +148,38 @@ function numberFormat(value, decimal, delim, thousands_sep) {
  * Extend jQuery-prototype ($.fn) with method serializeToJSON().
  */
 $.fn.extend({
-	serializeToJSON: function() {
-		return '"{' + $(this).serialize()
-			.split('&')
-			.map(function(elem) { return elem.split('='); })
-			.map(function(elem) {
-				return elem.map(function(elem, idx, array) {
-					var __elem;
-					elem = elem.replace(/(%[\da-f]+)/ig, function(group_0) { return decodeURIComponent(group_0); });
-					idx && (__elem = +elem);
-					return isFinite(__elem) ? elem : '"' + elem + '"';
-				});
-			})
-			.map(function(elem) { return elem.join(':')})
-			.join(',') + '}"'; 
-		}
-	});
-	
+    serializeToJSON: function () {
+        return '"{' + $(this).serialize()
+                .split('&')
+                .map(function (elem) {
+                    return elem.split('=');
+                })
+                .map(function (elem) {
+                    return elem.map(function (elem, idx, array) {
+                        var __elem;
+                        elem = elem.replace(/(%[\da-f]+)/ig, function (group_0) {
+                            return decodeURIComponent(group_0);
+                        });
+                        idx && (__elem = +elem);
+                        return isFinite(__elem) ? elem : '"' + elem + '"';
+                    });
+                })
+                .map(function (elem) {
+                    return elem.join(':')
+                })
+                .join(',') + '}"';
+    }
+});
+
 /** Extend DOM Element prototype to implement functionality of eventListenerList (proposal function which has been removed from the spec draft). */
-(function() {
-  Element.prototype.eventListenerList = {};
-  Element.prototype._addEventListener = Element.prototype.addEventListener;
-  Element.prototype.addEventListener = function(a,b,c) {
-    this._addEventListener(a,b,c);
-    if(!this.eventListenerList[a]) this.eventListenerList[a] = [];
-    this.eventListenerList[a].push(b);
-  };
+(function () {
+    Element.prototype.eventListenerList = {};
+    Element.prototype._addEventListener = Element.prototype.addEventListener;
+    Element.prototype.addEventListener = function (a, b, c) {
+        this._addEventListener(a, b, c);
+        if (!this.eventListenerList[a]) this.eventListenerList[a] = [];
+        this.eventListenerList[a].push(b);
+    };
 })();
 
 /**
@@ -182,8 +188,10 @@ $.fn.extend({
  */
 // TODO: add the functionality to determine the level of 'longest'.
 function getLongestWord(str) {
-  'use strict';
-  var normalize = str.split(/[^-a-zа-я\d]/i),
-      max_len = Math.max.apply(Math, normalize.map(function(elem) { return elem.length; })); 
-  return str.match(RegExp('[а-я]{' + max_len + '}', 'ig'));
- }
+    'use strict';
+    var normalize = str.split(/[^-a-zа-я\d]/i),
+        max_len = Math.max.apply(Math, normalize.map(function (elem) {
+            return elem.length;
+        }));
+    return str.match(RegExp('[а-я]{' + max_len + '}', 'ig'));
+}
