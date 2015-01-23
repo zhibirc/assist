@@ -1,6 +1,22 @@
-/** remove() method for DOM-elements. */
-Element.prototype.remove = function () {
-    this.parentElement.removeChild(this);
+/** remove() method for DOM-elements.
+ * @return {}
+ * @author zhibirc */
+Node.prototype.remove = Element.prototype.remove = function () {
+    return this.parentElement.removeChild(this);
+};
+
+Node.prototype.hide = Element.prototype.hide = function (level) {
+	switch level {
+	case 0:
+		this.style.visibility = 'hidden';
+		break;
+	case 1:
+		this.style.display = 'none';
+		break;
+	default:
+		throw new Error('Incorrect argument! Allowed 0 and 1 only.');
+	}
+    return this;
 };
 
 /** Implement last() method for collections of DOM-elements. */
