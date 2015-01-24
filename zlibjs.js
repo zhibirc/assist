@@ -1,21 +1,45 @@
-/** remove() method for DOM-elements.
- * @return {}
- * @author zhibirc */
-Node.prototype.remove = Element.prototype.remove = function () {
-    return this.parentElement.removeChild(this);
+/**
+ * Method <remove> for DOM elements. Remove particular element and additionally accepts two various behaviours.
+ * Flag "save" (or without flag at all) means that removed element returns.
+ * Flag "chain" means that the parent element returns to build methods chains.
+ *
+ * @author zhibirc
+ * @param {String} [aim] - Must be "save", "chain" or can be absent.
+ * @returns {Object}
+ */
+Element.prototype.remove = function (aim) {
+    var parent;
+    if (typeof aim === 'undefined' || aim === 'save') {
+        return this.parentNode.removeChild(this);
+    } else if (aim === 'chain') {
+        parent = this.parentNode;
+        parent.removeChild(this);
+        return parent;
+    } else {
+        throw new SyntaxError('Argument incorrect! Allowed "chain" and "save" (without flag is equivalent) only.');
+    }
 };
 
-Node.prototype.hide = Element.prototype.hide = function (level) {
-	switch level {
-	case 0:
-		this.style.visibility = 'hidden';
-		break;
-	case 1:
-		this.style.display = 'none';
-		break;
-	default:
-		throw new Error('Incorrect argument! Allowed 0 and 1 only.');
-	}
+/**
+ * Method <hide> for DOM elements. Accepts to various behaviours depend on flag. All flags must be numbers.
+ * Flag 0 instructs to hide element by change its opacity.
+ * Flag 1 instructs to hide element by change its display to "none".
+ *
+ * @author zhibirc
+ * @param {Number} level - Must be 0 or 1.
+ * @returns {Object}
+ */
+Element.prototype.hide = function (level) {
+    switch (level)  {
+        case 0:
+            this.style.visibility = 'hidden';
+            break;
+        case 1:
+            this.style.display = 'none';
+            break;
+        default:
+            throw new SyntaxError('Argument incorrect! Allowed 0 and 1 only.');
+    }
     return this;
 };
 
