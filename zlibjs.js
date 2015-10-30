@@ -9,11 +9,19 @@
 (function () {
     'use strict';
 
-    var element_prototype = Element.prototype,
+    var domElemProto = Element.prototype,
+		objProto = Object.prototype,
+		arrProto = Array.prototype,
+		strProto = String.prototype,
+		fnProto = Function.prototype,
         errors = {
             hide: 'Argument incorrect! Allowed 0 and 1 only.',
             remove: 'Argument incorrect! Allowed "chain" and "save" (without flag is equivalent) only.'
         };
+		
+	function isUndef(n) {
+		return typeof n === 'undefined';
+	}
 
     /**
      * Method <_remove_> for DOM elements. Remove particular element and additionally accepts two various behaviours.
@@ -21,14 +29,15 @@
      * Flag "chain" means that the parent element returns to build methods chains.
      *
      * @author zhibirc
-     * @param {String} [aim] - Must be "save", "chain" or can be absent.
+     * @param {String} aim - Must be "save", "chain".
      * @returns {Object}
      */
-    element_prototype._remove_ = function (aim) {
+    domElemProto._remove_ = function (aim) {
         var parent;
-        if (typeof aim == 'undefined' || aim == 'save') {
+		
+        if (aim === 'save') {
             return this.parentNode.removeChild(this);
-        } else if (aim == 'chain') {
+        } else if (aim === 'chain') {
             parent = this.parentNode;
             parent.removeChild(this);
             return parent;
@@ -46,7 +55,7 @@
      * @param {Number} level - Must be 0 or 1.
      * @returns {Object}
      */
-    element_prototype._hide_ = function (level) {
+    domElemProto._hide_ = function (level) {
         switch (level)  {
             case 0:
                 this.style.visibility = 'hidden';
@@ -90,7 +99,7 @@
                 /* optionally: (new Date).getTime() + */ msg + ';\n';
         });
         console.store.__defineGetter__('s', function () {
-            alert(this.basket);
+            console.log(this.basket);
         });
     }
 
@@ -113,8 +122,9 @@
      *
      * @author zhibirc
      */
-    String.prototype.multiChar = function (multi) {
-        for (var i = multi, str = ''; i--; str += this);
+    strProto['*'] = function (multiplier) {
+        for (var i = multiplier, str = ''; i--; str += this);
+		
         return str;
     };
 
@@ -123,24 +133,23 @@
      *
      * @author zhibirc
      */
-    String.prototype.multiChar = function (multi) {
-        return new Array(++multi).join(this);
+    strProto['*'] = function (multiplier) {
+        return Array(++multiplier).join(this);
     };
 
     /**
-     * Implement well known and standard behaviour of constants.
+     * Implement well known and standard behaviour of constants in ES5.
      *
      * @author zhibirc
      */
     var CONST = (function () {
-        var constStore = {};
+        var constStore = Object.create(null);
 
         return function (name, value) {
             if (typeof value === 'undefined') {
                 return constStore[name];
             } else {
                 Object.defineProperty(constStore, name, {
-                    __proto__: null,
                     value: value
                 });
                 return 0;
@@ -260,4 +269,14 @@
             }));
         return str.match(RegExp('[а-я]{' + max_len + '}', 'ig'));
     }
+	
+	arrProto['<<'] = function (elems) {
+		if (isUndef(elems) || !arguments.length) {
+			throw Error; // TODO
+		}
+		for (var i = 0, l = elems.length; i < l; i += 1) {
+			this.push(elems[i]);
+		}
+		return this; // Suitable for chaining purposes.
+	};
 }());
