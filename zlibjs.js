@@ -162,30 +162,33 @@
      *
      * @author zhibirc
      */
-    function addHandler(elems, actions) {
-        var errors = ['Wrong invocation! Properly syntax: addHandler([element_0, ..., element_N], { event_0: callback_0, ..., event_N: callback_N})'],
-            elem;
-        /** The aim of this approach is unobtrusively display an error (and return particular marker) without panic, because wrong call may be no matter for other functionality. */
-        if (arguments.length !== 2 || !Array.isArray(elems) || !(actions instanceof Object)) {
-            if (typeof console !== 'undefined' && typeof console.warn !== 'undefined') {
+    function addHandler(elem, actions) {
+        var errors = ['Wrong invocation! Properly syntax: addHandler(element, { event_0: callback_0, ..., event_N: callback_N})'],
+			evt;
+			
+		function isValid(n) {
+			// TODO: implement validation.
+		}
+		
+        if (arguments.length !== 2 || ![1, 9, window].some(function (_) { return _ === elem.nodeType || _ === window; }) || !isValid(actions)) {
+            if (typeof console !== 'undefined' && typeof console.warn === 'function') {
                 console.warn(errors[0]);
             }
             return 0;
         }
-        for (var i = elems.length; i--;) {
-            elem = elems[i];
-            for (var event in actions) {
-                if (actions.hasOwnProperty(event)) {
-                    if (elem.addEventListener) {
-                        elem.addEventListener(event, actions[event], false);
-                    } else if (elem.attachEvent) {
-                        elem.attachEvent('on' + event, function() { actions[event].call(elem); });
-                    } else {
-                        elem['on' + event] = actions[event];
-                    }
-                }
-            }
-        }
+		
+		for (evt in actions) {
+			if (objProto.hasOwnProperty.call(actions, evt)) {
+				if (elem.addEventListener) {
+					elem.addEventListener(evt, actions[evt], false);
+				} else if (elem.attachEvent) {
+					elem.attachEvent('on' + evt, function () { actions[evt].call(elem); });
+				} else {
+					elem['on' + evt] = actions[evt];
+				}
+			}
+		}
+        
     }
 
     /**
@@ -270,13 +273,24 @@
         return str.match(RegExp('[а-я]{' + max_len + '}', 'ig'));
     }
 	
-	arrProto['<<'] = function (elems) {
-		if (isUndef(elems) || !arguments.length) {
-			throw Error; // TODO
+	/**
+	 * Add arbitrary amount of elements (or elements from an array) to the end of current array.
+	 */
+	arrProto['<<'] = function () {
+		var args, elems, i, l;
+		
+		if (!arguments.length) {
+			return this;
 		}
-		for (var i = 0, l = elems.length; i < l; i += 1) {
+		
+		args = arrProto.slice.call(arguments);
+		
+		elems = args.length === 1 && Array.isArray(args[0]) ? args[0] : args; 
+		
+		for (i = 0, l = elems.length; i < l; i += 1) {
 			this.push(elems[i]);
 		}
+		
 		return this; // Suitable for chaining purposes.
 	};
 }());
