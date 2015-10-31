@@ -158,23 +158,31 @@
     }());
 
     /**
-     * Complex event installer on DOM elements.
-     *
+     * Complex event installer on DOM elements with old browser support.
      * @author zhibirc
      */
-    function addHandler(elem, actions) {
-        var errors = ['Wrong invocation! Properly syntax: addHandler(element, { event_0: callback_0, ..., event_N: callback_N})'],
-			evt;
+    function addHandler(elem, actions) { // TODO: polyfills of 'some' and 'Object.keys()' required.
+        var errors = ['Wrong syntax, event handlers have not been installed!\n' +
+					  'Properly syntax: addHandler(element, { event_0: callback_0, ..., event_N: callback_N })'], evt;
 			
 		function isValid(n) {
-			// TODO: implement validation.
+			var keys;
+			
+			if (objProto.toString.call(n).slice(8, -1) !== 'Object') {
+				return false;
+			}
+			
+			keys = Object.keys(n);
+			
+			if (!+keys || keys.some(function (_) { return typeof n[_] !== 'function'; })) {
+				return false;
+			}
+			
+			return true;
 		}
 		
         if (arguments.length !== 2 || ![1, 9, window].some(function (_) { return _ === elem.nodeType || _ === window; }) || !isValid(actions)) {
-            if (typeof console !== 'undefined' && typeof console.warn === 'function') {
-                console.warn(errors[0]);
-            }
-            return 0;
+            throw new Error(errors[0]);
         }
 		
 		for (evt in actions) {
@@ -293,4 +301,13 @@
 		
 		return this; // Suitable for chaining purposes.
 	};
+	
+	/**
+	 * Beautify with guillemets.
+	 * Select a node in your element inspector and run the following code in console.
+	 */
+	 (function () {
+		 var el = $0;
+		 // TODO
+	 }());
 }());
