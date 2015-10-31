@@ -303,11 +303,16 @@
 	};
 	
 	/**
-	 * Beautify with guillemets.
+	 * Beautify with guillemets and dashes.
 	 * Select a node in your element inspector and run the following code in console.
 	 */
-	 (function () {
-		 var el = $0;
-		 // TODO
-	 }());
+	 (function (el) {
+		 el.value = el.value
+			// replace left-side double quotes
+		   .replace(/(^|\s)"/g, '$1«')
+			// replace right-side double quotes
+           .replace(/"(\s|[-.,:;?!]|$)/g, '»$1')
+		    // replace hyphen with a dash
+           .replace(/(\s)-(\s)/g, '$1—$2');
+	 }($0 /* or $N*/));
 }());
