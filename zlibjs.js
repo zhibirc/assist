@@ -315,4 +315,11 @@
 		    // replace hyphen with a dash
            .replace(/(\s)-(\s)/g, '$1—$2');
 	 }($0 /* or $N*/));
+	 
+	 /** Get Greatest Common Divisor (Highest Common Factor) as a built-in function. */
+	 if (typeof Math.gcd !== 'function') {
+		 Math.gcd = function (a, b) {
+			 return b ? Math.gcd(b, a % b) : a;
+		 };
+	 }
 }());
