@@ -317,9 +317,25 @@
 	 }($0 /* or $N*/));
 	 
 	 /** Get Greatest Common Divisor (Highest Common Factor) as a built-in function. */
-	 if (typeof Math.gcd !== 'function') {
+	 if (!isFunction(Math.gcd)) {
 		 Math.gcd = function (a, b) {
 			 return b ? Math.gcd(b, a % b) : a;
 		 };
+	 }
+	 
+	 /** Get factorial with Tail call optimization. */
+	 if (!isFunction(Math.factorial)) {
+		 Math.factorial = function (n) {
+			 function _factorial(n, acc) {
+				 return n <= 1 ? acc : _factorial(n - 1, n * acc);
+			 }
+			 
+			 return _factorial(n, 1);
+		 };
+	 }
+	 
+	 /** Helper */
+	 function isFunction(entity) {
+		 return typeof entity === 'function';
 	 }
 }());
