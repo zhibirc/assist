@@ -18,9 +18,17 @@
             hide: 'Argument incorrect! Allowed 0 and 1 only.',
             remove: 'Argument incorrect! Allowed "chain" and "save" (without flag is equivalent) only.'
         };
-		
+	
+	/*|-------------------------|
+	  |	Type detection helpers. |
+	  |-------------------------|*/
+	
 	function isUndef(n) {
 		return typeof n === 'undefined';
+	}
+	
+	function isFunc(entity) {
+		return typeof entity === 'function';
 	}
 
     /**
@@ -316,15 +324,19 @@
            .replace(/(\s)-(\s)/g, '$1—$2');
 	 }($0 /* or $N*/));
 	 
+	/*|----------------------------------------------------------------------------------|
+	  | MATH functions and algorithms implemented as extensions of Math built-in object. |
+	  |----------------------------------------------------------------------------------|*/
+	 
 	 /** Get Greatest Common Divisor (Highest Common Factor) as a built-in function. */
-	 if (!isFunction(Math.gcd)) {
+	 if (!isFunc(Math.gcd)) {
 		 Math.gcd = function (a, b) {
 			 return b ? Math.gcd(b, a % b) : a;
 		 };
 	 }
 	 
 	 /** Get factorial with Tail call optimization. */
-	 if (!isFunction(Math.factorial)) {
+	 if (!isFunc(Math.factorial)) {
 		 Math.factorial = function (n) {
 			 function _factorial(n, acc) {
 				 return n <= 1 ? acc : _factorial(n - 1, n * acc);
@@ -334,20 +346,15 @@
 		 };
 	 }
 	 
-	 /** Helper */
-	 function isFunction(entity) {
-		 return typeof entity === 'function';
-	 }
-	 
 	 /** Detect if N is in Fibonacci sequence. */
-	 if (!isFunction(Math.isFib)) {
+	 if (!isFunc(Math.isFib)) {
 		 Math.isFib = function (n) {
 			 return !(Math.sqrt(5 * n * n + 4) % 1);
 		 };
 	 }
 	 
 	 /** Get Fibonacci sequence as an array. */
-	 if (!isFunction(Math.fibTo)) {
+	 if (!isFunc(Math.fibTo)) {
 		 Math.fibTo = function (n) {
 			 var ret = [], a = 0, b = 1, tmp;
 			 while (n--) {
@@ -361,10 +368,28 @@
 	 }
 	 
 	 /** Get N-th Fibonacci number. */
-	 if (!isFunction(Math.fib)) {
+	 if (!isFunc(Math.fib)) {
 		 Math.fib = function (n) {
 			 const PHI = (1 + Math.sqrt(5)) / 2;
 			 return ~~( Math.pow(PHI, n) / Math.sqrt(5) + .5);
 		 };
+	 }
+	 
+	 /** Exponentiating by squaring algorithm. */
+	 if (!isFunc(Math.fpow)) {
+		Math.fpow = function (x, n) {
+			if (!n) return 1;
+			let i = 1;
+			while (n) {
+				if (!(n & 1)) {
+					n >>= 1;
+					x *= x;
+				} else {
+					n--;
+					i *= x;
+				}
+			}
+			return i;
+		}
 	 }
 }());
