@@ -338,4 +338,24 @@
 	 function isFunction(entity) {
 		 return typeof entity === 'function';
 	 }
+	 
+	 /** Is N in Fibonacci sequence. */
+	 if (!isFunction(Math.isFib)) {
+		 Math.isFib = function (n) {
+			 return !(Math.sqrt(5 * n * n + 4) % 1);
+		 };
+	 }
+	 
+	 if (!isFunction(Math.fib)) {
+		 Math.fib = function (n) {
+			 var ret = [], a = 0, b = 1, tmp;
+			 while (n--) {
+				 ret.push(a);
+				 tmp = a;
+				 a = b;
+				 b += tmp;
+			 }
+			 return ret;
+		 };
+	 }
 }());
