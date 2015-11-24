@@ -339,15 +339,16 @@
 		 return typeof entity === 'function';
 	 }
 	 
-	 /** Is N in Fibonacci sequence. */
+	 /** Detect if N is in Fibonacci sequence. */
 	 if (!isFunction(Math.isFib)) {
 		 Math.isFib = function (n) {
 			 return !(Math.sqrt(5 * n * n + 4) % 1);
 		 };
 	 }
 	 
-	 if (!isFunction(Math.fib)) {
-		 Math.fib = function (n) {
+	 /** Get Fibonacci sequence as an array. */
+	 if (!isFunction(Math.fibTo)) {
+		 Math.fibTo = function (n) {
 			 var ret = [], a = 0, b = 1, tmp;
 			 while (n--) {
 				 ret.push(a);
@@ -356,6 +357,14 @@
 				 b += tmp;
 			 }
 			 return ret;
+		 };
+	 }
+	 
+	 /** Get N-th Fibonacci number. */
+	 if (!isFunction(Math.fib)) {
+		 Math.fib = function (n) {
+			 const PHI = (1 + Math.sqrt(5)) / 2;
+			 return ~~( Math.pow(PHI, n) / Math.sqrt(5) + .5);
 		 };
 	 }
 }());
