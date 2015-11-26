@@ -392,4 +392,33 @@
 			return i;
 		}
 	 }
+	 
+	 /** Range */
+	 function range(start, end) {
+		 if (end <= start) {
+			 return [];
+		 }
+		 
+		 if (isUndef(b)) {
+			 end = start;
+			 start = 0;
+		 }
+		 
+		 let n = end - start;
+		 return Array.apply(null, Array(n)).map((el, idx) => a + idx);
+	 }
+	 
+	 /** Get prime numbers in range. */
+	 if (!isFunc(Math.primes)) {
+		 Math.primes = function (a, b) {
+			let lst = range(a, b + 1),
+				 primes = [],
+				 n = Math.abs(b - a),
+				 i = 0;
+			while (i <= n) {
+				
+			}
+			 
+		 };
+	 }
 }());
