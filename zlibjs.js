@@ -399,10 +399,11 @@
 	 
 	 /** Range */
 	 function range(...args) {
-		 let argsLen = args.length;
+		 let argsLen = args.length,
+			 start, stop, step;
 		 
-		 if (!argsLen.length) {
-			 throw new Error('expected at least 1 arguments, got 0');
+		 if (!argsLen) {
+			 throw new Error('expected at least 1 argument, got 0');
 		 }
 		 
 		 if (argsLen > 3) {
@@ -414,13 +415,23 @@
 		 }
 		 
 		 switch (argsLen) {
-		 //case:
+		 case 1:
+			start = 0, stop = args[0], step = 1;
+			break;
+		 case 2:
+			start = args[0], stop = args[1], step = 1;
+			if (start >= stop) return [];
+			break;
+		 case 3:
+			start = args[0], stop = args[1], step = args[2];
+			if (!step) throw new Error('step argument must not be zero');
+			if (Math.sign(stop) !== Math.sign(step)) return [];
+			if (start >= stop) return [];
+			if (start + step >= stop) return [start];
 		 }
 		 
-		 
-		 
-		 let n = end - start;
-		 return Array.apply(null, Array(n)).map((el, idx) => a + idx);
+		 let n = stop - start;
+		 return Array.apply(null, Array(n)).map((_, idx) => start + step * idx);
 	 }
 	 
 	 /** Get prime numbers in range. */
