@@ -23,12 +23,16 @@
 	  |	Type detection helpers. |
 	  |-------------------------|*/
 	
-	function isUndef(n) {
-		return typeof n === 'undefined';
+	function isUndef(entity) {
+		return typeof entity === 'undefined';
 	}
 	
 	function isFunc(entity) {
 		return typeof entity === 'function';
+	}
+	
+	function isInt(entity) {
+		return typeof entity === 'number' && entity % 1 === 0;
 	}
 
     /**
@@ -394,15 +398,26 @@
 	 }
 	 
 	 /** Range */
-	 function range(start, end) {
-		 if (end <= start) {
-			 return [];
+	 function range(...args) {
+		 let argsLen = args.length;
+		 
+		 if (!argsLen.length) {
+			 throw new Error('expected at least 1 arguments, got 0');
 		 }
 		 
-		 if (isUndef(b)) {
-			 end = start;
-			 start = 0;
+		 if (argsLen > 3) {
+			 throw new Error('expected at most 3 arguments, got ' + argsLen);
 		 }
+		 
+		 if (args.some(arg => !isInt(arg))) {
+			 throw new Error('arguments must be all integers');
+		 }
+		 
+		 switch (argsLen) {
+		 //case:
+		 }
+		 
+		 
 		 
 		 let n = end - start;
 		 return Array.apply(null, Array(n)).map((el, idx) => a + idx);
