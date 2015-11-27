@@ -9,7 +9,8 @@
 define('zJS', function () {
     'use strict';
 
-    var domElemProto = Element.prototype,
+    var zJS = {},
+		domElemProto = Element.prototype,
 		objProto = Object.prototype,
 		arrProto = Array.prototype,
 		strProto = String.prototype,
@@ -333,69 +334,57 @@ define('zJS', function () {
 	  |----------------------------------------------------------------------------------|*/
 	 
 	 /** Get Greatest Common Divisor (Highest Common Factor) as a built-in function. */
-	 if (!isFunc(Math.gcd)) {
-		 Math.gcd = function (a, b) {
-			 return b ? Math.gcd(b, a % b) : a;
-		 };
-	 }
+	 zJS.gcd = function (a, b) {
+		 return b ? Math.gcd(b, a % b) : a;
+	 };
 	 
 	 /** Get factorial with Tail call optimization. */
-	 if (!isFunc(Math.factorial)) {
-		 Math.factorial = function (n) {
-			 function _factorial(n, acc) {
-				 return n <= 1 ? acc : _factorial(n - 1, n * acc);
-			 }
-			 
-			 return _factorial(n, 1);
-		 };
-	 }
+	 zJS.factorial = function (n) {
+		 function _factorial(n, acc) {
+			 return n <= 1 ? acc : _factorial(n - 1, n * acc);
+		 }
+		 
+		 return _factorial(n, 1);
+	 };
 	 
 	 /** Detect if N is in Fibonacci sequence. */
-	 if (!isFunc(Math.isFib)) {
-		 Math.isFib = function (n) {
-			 return !(Math.sqrt(5 * n * n + 4) % 1);
-		 };
-	 }
+	 zJS.isFib = function (n) {
+		 return !(Math.sqrt(5 * n * n + 4) % 1);
+	 };
 	 
 	 /** Get Fibonacci sequence as an array. */
-	 if (!isFunc(Math.fibTo)) {
-		 Math.fibTo = function (n) {
-			 var ret = [], a = 0, b = 1, tmp;
-			 while (n--) {
-				 ret.push(a);
-				 tmp = a;
-				 a = b;
-				 b += tmp;
-			 }
-			 return ret;
-		 };
-	 }
+	 zJS.fibTo = function (n) {
+		 var ret = [], a = 0, b = 1, tmp;
+		 while (n--) {
+			 ret.push(a);
+			 tmp = a;
+			 a = b;
+			 b += tmp;
+		 }
+		 return ret;
+	 };
 	 
 	 /** Get N-th Fibonacci number. */
-	 if (!isFunc(Math.fib)) {
-		 Math.fib = function (n) {
-			 const PHI = (1 + Math.sqrt(5)) / 2;
-			 return ~~( Math.pow(PHI, n) / Math.sqrt(5) + .5);
-		 };
-	 }
+	 zJS.fib = function (n) {
+		 const PHI = (1 + Math.sqrt(5)) / 2;
+		 return ~~( Math.pow(PHI, n) / Math.sqrt(5) + .5);
+	 };
 	 
 	 /** Exponentiating by squaring algorithm. */
-	 if (!isFunc(Math.fpow)) {
-		Math.fpow = function (x, n) {
-			if (!n) return 1;
-			let i = 1;
-			while (n) {
-				if (!(n & 1)) {
-					n >>= 1;
-					x *= x;
-				} else {
-					n--;
-					i *= x;
-				}
+	zJS.fpow = function (x, n) {
+		if (!n) return 1;
+		let i = 1;
+		while (n) {
+			if (!(n & 1)) {
+				n >>= 1;
+				x *= x;
+			} else {
+				n--;
+				i *= x;
 			}
-			return i;
 		}
-	 }
+		return i;
+	}
 	 
 	 /** Range */
 	 function range(...args) {
@@ -435,18 +424,16 @@ define('zJS', function () {
 	 }
 	 
 	 /** Get prime numbers in range. */
-	 if (!isFunc(Math.primes)) {
-		 Math.primes = function (a, b) {
-			let lst = range(a, b + 1),
-				 primes = [],
-				 n = Math.abs(b - a),
-				 i = 0;
-			while (i <= n) {
-				
-			}
-			 
-		 };
-	 }
+	 zJS.primes = function (a, b) {
+		let lst = range(a, b + 1),
+			 primes = [],
+			 n = Math.abs(b - a),
+			 i = 0;
+		while (i <= n) {
+			
+		}
+		 
+	 };
 	 
 	 /**
 	  *	@exports
