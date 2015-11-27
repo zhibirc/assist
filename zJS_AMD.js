@@ -6,7 +6,7 @@
  *  @author zhibirc
  *  @license
  */
-(function () {
+define('zJS', function () {
     'use strict';
 
     var domElemProto = Element.prototype,
@@ -447,4 +447,9 @@
 			 
 		 };
 	 }
-}());
+	 
+	 /**
+	  *	@exports
+	  */
+	 return zJS;
+});
