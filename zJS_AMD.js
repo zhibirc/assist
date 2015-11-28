@@ -10,6 +10,7 @@ define('zJS', function () {
     'use strict';
 
     var zJS = {},
+		ValueError = Object.create(Error.prototype),
 		domElemProto = Element.prototype,
 		objProto = Object.prototype,
 		arrProto = Array.prototype,
@@ -18,7 +19,8 @@ define('zJS', function () {
         errors = {
             hide: 'Argument incorrect! Allowed 0 and 1 only.',
             remove: 'Argument incorrect! Allowed "chain" and "save" (without flag is equivalent) only.'
-        };
+        }
+		gcd, hcd, gcf, hcf, gcm, factorial, isFib;
 	
 	/*|-------------------------|
 	  |	Type detection helpers. |
@@ -36,6 +38,8 @@ define('zJS', function () {
 		return typeof entity === 'number' && entity % 1 === 0;
 	}
 
+	zJS.dom = {};
+	
     /**
      * Method <_remove_> for DOM elements. Remove particular element and additionally accepts two various behaviours.
      * Flag "save" (or without flag at all) means that removed element returns.
@@ -334,27 +338,38 @@ define('zJS', function () {
 	  |----------------------------------------------------------------------------------|*/
 	 
 	 /** Get Greatest Common Divisor (Highest Common Factor) as a built-in function. */
-	 zJS.gcd = function (a, b) {
-		 return b ? Math.gcd(b, a % b) : a;
-	 };
+	 gcd = function _(a, b) {
+		 return b ? _(b, a % b) : a; // Instead of use arguments.callee
+	 }
 	 
 	 /** Get factorial with Tail call optimization. */
-	 zJS.factorial = function (n) {
-		 function _factorial(n, acc) {
-			 return n <= 1 ? acc : _factorial(n - 1, n * acc);
+	 factorial = function (n) {
+		 if (!isInt(n)) {
+			 throw new ValueError('factorial() only accepts integral values');
 		 }
 		 
-		 return _factorial(n, 1);
+		 function _(n, acc) {
+			 return n < 2 ? acc : _(n - 1, n * acc);
+		 }
+		 
+		 return _(n, 1);
 	 };
 	 
 	 /** Detect if N is in Fibonacci sequence. */
-	 zJS.isFib = function (n) {
-		 return !(Math.sqrt(5 * n * n + 4) % 1);
+	 isFib = function (n) {
+		 var _isInt = isInt,
+			  sqrt = Math.sqrt;
+		 return _isInt(n) ? _isInt(sqrt(5 * n * n - 4)) || _isInt(sqrt(5 * n * n + 4)) : false;
 	 };
 	 
 	 /** Get Fibonacci sequence as an array. */
-	 zJS.fibTo = function (n) {
+	 fibTo = function (n) {
 		 var ret = [], a = 0, b = 1, tmp;
+		 
+		 if (!isInt) {
+			 
+		 }
+		 
 		 while (n--) {
 			 ret.push(a);
 			 tmp = a;
@@ -414,13 +429,12 @@ define('zJS', function () {
 		 case 3:
 			start = args[0], stop = args[1], step = args[2];
 			if (!step) throw new Error('step argument must not be zero');
-			if (Math.sign(stop) !== Math.sign(step)) return [];
-			if (start >= stop) return [];
+			if (Math.abs(start) + Math.abs(step) < Math.abs(start)) return [];
+			if (start >= stop && !~Math.sign(step)) return [];
 			if (start + step >= stop) return [start];
 		 }
 		 
-		 let n = stop - start;
-		 return Array.apply(null, Array(n)).map((_, idx) => start + step * idx);
+		 return Array.apply(null, Array(Math.ceil((stop - start) / step))).map((_, idx) => start + step * idx);
 	 }
 	 
 	 /** Get prime numbers in range. */
@@ -433,6 +447,17 @@ define('zJS', function () {
 			
 		}
 		 
+	 };
+	 
+	 /** Public API */
+	 zJS.math = {
+		gcd: gcd,
+		hcd: gcd,
+		gcf: gcd,
+		hcf: gcd,
+		gcm: gcd,
+		factorial: factorial,
+		isFib: isFib
 	 };
 	 
 	 /**
