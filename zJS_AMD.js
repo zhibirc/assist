@@ -20,7 +20,11 @@ define('zJS', function () {
             hide: 'Argument incorrect! Allowed 0 and 1 only.',
             remove: 'Argument incorrect! Allowed "chain" and "save" (without flag is equivalent) only.'
         },
-		gcd, hcd, gcf, hcf, gcm, factorial, isFib, fibTo, fib, primes;
+		gcd, hcd, gcf, hcf, gcm, factorial, isFib, fibTo, fib, primes, swap;
+		
+		zJS.dom = {};
+		zJS.util = {};
+		zJS.math = {};
 	
 	/*|-------------------------|
 	  |	Type detection helpers. |
@@ -333,6 +337,7 @@ define('zJS', function () {
            .replace(/(\s)-(\s)/g, '$1—$2');
 	 }($0 /* or $N*/));
 	 
+	 
 	/*|----------------------------------------------------------------------------------|
 	  | MATH functions and algorithms implemented as extensions of Math built-in object. |
 	  |----------------------------------------------------------------------------------|*/
@@ -364,26 +369,26 @@ define('zJS', function () {
 		 return _isInt(n) ? _isInt(sqrt(mul - 4)) || _isInt(sqrt(mul + 4)) : false;
 	 };
 	 
-	 /** Get Fibonacci sequence as an array. */
-	 fibTo = function (n) {
-		 var ret = [], a = 0, b = 1, tmp;
+	/** Get Fibonacci sequence as an array. */
+	fibTo = function (n) {
+		var ret = [], a = 0, b = 1, tmp;
 		 
-		 if (!isInt(n)) {
-			 return new ValueError('fibTo() only accepts integral values');
-		 }
+		if (!isInt(n)) {
+			return new ValueError('fibTo() only accepts integral values');
+		}
 		 
-		 while (n--) {
-			 ret.push(a);
-			 tmp = a;
-			 a = b;
-			 b += tmp;
-		 }
+		while (n--) {
+			ret.push(a);
+			tmp = a;
+			a = b;
+			b += tmp;
+		}
 		 
-		 return ret;
-	 };
+		return ret;
+	};
 	 
-	 /** Get N-th Fibonacci number. */
-	 fib = function (n) {
+	/** Get N-th Fibonacci number. */
+	fib = function (n) {
 		if (!isInt(n)) {
 			return new ValueError('fib() only accepts integral values');
 		}
@@ -396,7 +401,7 @@ define('zJS', function () {
 		const M_PHI = (1 - SQRT_5) / 2;
 		
 		return ~~((_fpow(P_PHI, n) - _fpow(M_PHI, n)) / SQRT_5 + .5);
-	 };
+	};
 	 
 	/** Exponentiating by squaring algorithm. */
 	fpow = function (x, n) {
@@ -455,8 +460,8 @@ define('zJS', function () {
 		 return Array.apply(null, Array(Math.ceil((stop - start) / step))).map((_, idx) => start + step * idx);
 	 }
 	 
-	 /** Get prime numbers in range. */
-	 primes = function (a, b) {
+	/** Get prime numbers in range. */
+	primes = function (a, b) {
 		let lst = range(a, b + 1),
 			 primes = [],
 			 n = Math.abs(b - a),
@@ -465,7 +470,13 @@ define('zJS', function () {
 			
 		}
 		 
-	 };
+	};
+	 
+	swap = function (a, b) {
+		a ^= b;
+		b ^= a;
+		a ^= b;
+	};
 	 
 	 /** Public API */
 	 zJS.math = {
@@ -478,7 +489,8 @@ define('zJS', function () {
 		isFib: isFib, // is particular N is Fibonacci number
 		fibTo: fibTo, // get N Fibonacci numbers
 		fib: fib, // get N-th Fibonacci number
-		fpow: fpow // fast squaring algorithm
+		fpow: fpow, // fast squaring algorithm
+		swap: swap // swap variables 
 	 };
 	 
 	 /**
