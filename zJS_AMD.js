@@ -19,8 +19,8 @@ define('zJS', function () {
         errors = {
             hide: 'Argument incorrect! Allowed 0 and 1 only.',
             remove: 'Argument incorrect! Allowed "chain" and "save" (without flag is equivalent) only.'
-        }
-		gcd, hcd, gcf, hcf, gcm, factorial, isFib;
+        },
+		gcd, hcd, gcf, hcf, gcm, factorial, isFib, fibTo, fib, primes;
 	
 	/*|-------------------------|
 	  |	Type detection helpers. |
@@ -337,7 +337,7 @@ define('zJS', function () {
 	  | MATH functions and algorithms implemented as extensions of Math built-in object. |
 	  |----------------------------------------------------------------------------------|*/
 	 
-	 /** Get Greatest Common Divisor (Highest Common Factor) as a built-in function. */
+	 /** Get Greatest Common Divisor (Highest Common Factor). */
 	 gcd = function _(a, b) {
 		 return b ? _(b, a % b) : a; // Instead of use arguments.callee
 	 }
@@ -358,16 +358,18 @@ define('zJS', function () {
 	 /** Detect if N is in Fibonacci sequence. */
 	 isFib = function (n) {
 		 var _isInt = isInt,
-			  sqrt = Math.sqrt;
-		 return _isInt(n) ? _isInt(sqrt(5 * n * n - 4)) || _isInt(sqrt(5 * n * n + 4)) : false;
+			  sqrt = Math.sqrt,
+			  mul = 5 * n * n;
+			  
+		 return _isInt(n) ? _isInt(sqrt(mul - 4)) || _isInt(sqrt(mul + 4)) : false;
 	 };
 	 
 	 /** Get Fibonacci sequence as an array. */
 	 fibTo = function (n) {
 		 var ret = [], a = 0, b = 1, tmp;
 		 
-		 if (!isInt) {
-			 
+		 if (!isInt(n)) {
+			 return new ValueError('fibTo() only accepts integral values');
 		 }
 		 
 		 while (n--) {
@@ -376,19 +378,34 @@ define('zJS', function () {
 			 a = b;
 			 b += tmp;
 		 }
+		 
 		 return ret;
 	 };
 	 
 	 /** Get N-th Fibonacci number. */
-	 zJS.fib = function (n) {
-		 const PHI = (1 + Math.sqrt(5)) / 2;
-		 return ~~( Math.pow(PHI, n) / Math.sqrt(5) + .5);
+	 fib = function (n) {
+		if (!isInt(n)) {
+			return new ValueError('fib() only accepts integral values');
+		}
+		
+		let sqrt = Math.sqrt;
+		let _fpow = fpow;
+		
+		const SQRT_5 = sqrt(5);
+		const P_PHI = (1 + SQRT_5) / 2;
+		const M_PHI = (1 - SQRT_5) / 2;
+		
+		return ~~((_fpow(P_PHI, n) - _fpow(M_PHI, n)) / SQRT_5 + .5);
 	 };
 	 
-	 /** Exponentiating by squaring algorithm. */
-	zJS.fpow = function (x, n) {
-		if (!n) return 1;
+	/** Exponentiating by squaring algorithm. */
+	fpow = function (x, n) {
+		if (!n) {
+			return 1;
+		}
+		
 		let i = 1;
+		
 		while (n) {
 			if (!(n & 1)) {
 				n >>= 1;
@@ -398,8 +415,9 @@ define('zJS', function () {
 				i *= x;
 			}
 		}
+		
 		return i;
-	}
+	};
 	 
 	 /** Range */
 	 function range(...args) {
@@ -438,7 +456,7 @@ define('zJS', function () {
 	 }
 	 
 	 /** Get prime numbers in range. */
-	 zJS.primes = function (a, b) {
+	 primes = function (a, b) {
 		let lst = range(a, b + 1),
 			 primes = [],
 			 n = Math.abs(b - a),
@@ -451,13 +469,16 @@ define('zJS', function () {
 	 
 	 /** Public API */
 	 zJS.math = {
-		gcd: gcd,
-		hcd: gcd,
-		gcf: gcd,
-		hcf: gcd,
-		gcm: gcd,
-		factorial: factorial,
-		isFib: isFib
+		gcd: gcd, // get Greatest Common Divisor
+		hcd: gcd, // alias to gcd
+		gcf: gcd, // alias to gcd
+		hcf: gcd, // alias to gcd
+		gcm: gcd, // alias to gcd
+		factorial: factorial, // get factorial
+		isFib: isFib, // is particular N is Fibonacci number
+		fibTo: fibTo, // get N Fibonacci numbers
+		fib: fib, // get N-th Fibonacci number
+		fpow: fpow // fast squaring algorithm
 	 };
 	 
 	 /**
