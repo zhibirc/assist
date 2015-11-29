@@ -336,8 +336,12 @@ define('zJS', function () {
 		    // replace hyphen with a dash
            .replace(/(\s)-(\s)/g, '$1—$2');
 	 }($0 /* or $N*/));
-	 
-	 
+	
+    /** Find original values in an array. */
+	origins = function (arr) {
+		return Object.keys(arr.reduce(function(r, v) { return r[v] = 1, r; }, {}));
+	};
+	
 	/*|----------------------------------------------------------------------------------|
 	  | MATH functions and algorithms implemented as extensions of Math built-in object. |
 	  |----------------------------------------------------------------------------------|*/
