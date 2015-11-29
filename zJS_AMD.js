@@ -20,7 +20,11 @@ define('zJS', function () {
             hide: 'Argument incorrect! Allowed 0 and 1 only.',
             remove: 'Argument incorrect! Allowed "chain" and "save" (without flag is equivalent) only.'
         },
+		// DOM
+		fetch,
+		// UTILS
 		drawBounds,
+		// MATH
 		gcd, factorial, isFib, fibTo, fib, primes, swap, isPowOf2;
 		
 		zJS.dom = {};
@@ -42,8 +46,11 @@ define('zJS', function () {
 	function isInt(entity) {
 		return typeof entity === 'number' && entity % 1 === 0;
 	}
-
-	zJS.dom = {};
+	
+	/** Entry point to all DOM methods, gets element/elements for future usage. */
+	fetch = function (elements) {
+		
+	};
 	
     /**
      * Method <_remove_> for DOM elements. Remove particular element and additionally accepts two various behaviours.
