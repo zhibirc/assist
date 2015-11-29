@@ -20,7 +20,7 @@ define('zJS', function () {
             hide: 'Argument incorrect! Allowed 0 and 1 only.',
             remove: 'Argument incorrect! Allowed "chain" and "save" (without flag is equivalent) only.'
         },
-		gcd, hcd, gcf, hcf, gcm, factorial, isFib, fibTo, fib, primes, swap;
+		gcd, factorial, isFib, fibTo, fib, primes, swap, isPowOf2;
 		
 		zJS.dom = {};
 		zJS.util = {};
@@ -481,6 +481,10 @@ define('zJS', function () {
 		b ^= a;
 		a ^= b;
 	};
+	
+	isPowOf2 = function (n) {
+		return n && !(n & (n - 1));
+	};
 	 
 	 /** Public API */
 	 zJS.math = {
@@ -494,7 +498,8 @@ define('zJS', function () {
 		fibTo: fibTo, // get N Fibonacci numbers
 		fib: fib, // get N-th Fibonacci number
 		fpow: fpow, // fast squaring algorithm
-		swap: swap // swap variables 
+		swap: swap, // swap variables
+		isPowOf2: isPowOf2 // determining if an integer is a power of 2
 	 };
 	 
 	 /**
