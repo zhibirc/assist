@@ -20,6 +20,7 @@ define('zJS', function () {
             hide: 'Argument incorrect! Allowed 0 and 1 only.',
             remove: 'Argument incorrect! Allowed "chain" and "save" (without flag is equivalent) only.'
         },
+		drawBounds,
 		gcd, factorial, isFib, fibTo, fib, primes, swap, isPowOf2;
 		
 		zJS.dom = {};
@@ -129,14 +130,14 @@ define('zJS', function () {
      *
      * @author Addi Osmani
      */
-    (function (a) {
+    drawBounds = function (a = '*') {
         [].forEach.call(
             document.querySelectorAll(a),
             function (b) {
                 b.style.outline = '1px solid #' + (~~(Math.random() * (1 << 24))).toString(16)
             }
         )
-    })('*');
+    };
 
     /**
      * Multiply string N-times - first edition.
