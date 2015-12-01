@@ -21,7 +21,7 @@ import ERRORS from './zJS_errors_ES6.js';
 		// DOM
 		fetch,
 		// UTILS
-		drawBounds,
+		drawBounds, setZeroTimeout,
 		// MATH
 		gcd, factorial, isFib, fibTo, fib, primes, swap, isPowOf2;
 		
@@ -347,6 +347,23 @@ import ERRORS from './zJS_errors_ES6.js';
 	origins = function (arr) {
 		return Object.keys(arr.reduce(function(r, v) { return r[v] = 1, r; }, {}));
 	};
+	
+	/** Minimize timeout. */
+	setZeroTimeout = (function () {
+		let fn, ctx;
+
+		window.addEventListener('message', function () {
+			if (fn) {
+				fn.call(ctx);
+			}
+		}, false);
+
+		return function(_fn, _ctx) {
+			fn = _fn;
+			ctx = _ctx;
+			window.postMessage('', '*');
+		};
+	})(); 
 	
 	/*|----------------------------------------------------------------------------------|
 	  | MATH functions and algorithms implemented as extensions of Math built-in object. |

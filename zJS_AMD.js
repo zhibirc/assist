@@ -9,7 +9,7 @@
 define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
     'use strict';
 
-    var zJS = {},
+    let zJS = {},
 		ValueError = Object.create(Error.prototype),
 		domElemProto = Element.prototype,
 		objProto = Object.prototype,
@@ -23,9 +23,9 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 		// DOM
 		fetch,
 		// UTILS
-		drawBounds,
+		drawBounds, setZeroTimeout, typoGraph,
 		// MATH
-		gcd, factorial, isFib, fibTo, fib, primes, swap, isPowOf2;
+		gcd, factorial, isFib, fibTo, fib, primes, swap, isPowOf2, isMinus0;
 		
 		zJS.dom = {};
 		zJS.util = {};
@@ -35,21 +35,44 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 	  |	Type detection helpers. |
 	  |-------------------------|*/
 	
+	/**
+	 *	Check that given value is undefined.
+	 *	@param {*} entity - Value for checking.
+	 */
 	function isUndef(entity) {
 		return typeof entity === 'undefined';
 	}
 	
+	/**
+	 *	Check that given value is function.
+	 *	@param {*} entity - Value for checking.
+	 */
 	function isFunc(entity) {
 		return typeof entity === 'function';
 	}
 	
+	/**
+	 *	Check that given value is integral number.
+	 *	@param {*} entity - Value for checking.
+	 */
 	function isInt(entity) {
 		return typeof entity === 'number' && entity % 1 === 0;
 	}
 	
-	/** Entry point to all DOM methods, gets element/elements for future usage. */
-	fetch = function (elements) {
+	/**
+	 *	Entry point to all DOM methods, gets element/elements for future usage.
+	 *	@param {(Object|Object[])} elements - Single DOM element or multiple DOM elements.
+	 */
+	fetch = function (...elements) {
+		let len = elements.length;
 		
+		if (!len) {
+			throw new ValueError(); // TODO
+		} else if (len === 1) {
+			return elements[0];
+		} else {
+			return elements;
+		}
 	};
 	
     /**
@@ -335,7 +358,7 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 	 * Beautify with guillemets and dashes.
 	 * Select a node in your element inspector and run the following code in console.
 	 */
-	 (function (el) {
+	typoGraph = function (el) {
 		 el.value = el.value
 			// replace left-side double quotes
 		   .replace(/(^|\s)"/g, '$1«')
@@ -343,12 +366,29 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
            .replace(/"(\s|[-.,:;?!]|$)/g, '»$1')
 		    // replace hyphen with a dash
            .replace(/(\s)-(\s)/g, '$1—$2');
-	 }($0 /* or $N*/));
+	};
 	
     /** Find original values in an array. */
 	origins = function (arr) {
 		return Object.keys(arr.reduce(function(r, v) { return r[v] = 1, r; }, {}));
 	};
+	
+	/** Minimize timeout. */
+	setZeroTimeout = (function () {
+		let fn, ctx;
+
+		window.addEventListener('message', function () {
+			if (fn) {
+				fn.call(ctx);
+			}
+		}, false);
+
+		return function(_fn, _ctx) {
+			fn = _fn;
+			ctx = _ctx;
+			window.postMessage('', '*');
+		};
+	})();
 	
 	/*|----------------------------------------------------------------------------------|
 	  | MATH functions and algorithms implemented as extensions of Math built-in object. |
