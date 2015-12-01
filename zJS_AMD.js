@@ -491,7 +491,11 @@ define('zJS', function () {
 	};
 	
 	isPowOf2 = function (n) {
-		return n && !(n & (n - 1));
+		return typeof n === 'number' && !!n && !(n & (n - 1));
+	};
+	
+	isMinus0 = function (n) {
+		return n === 0 && 1 / n === -Infinity;
 	};
 	 
 	 /** Public API */
@@ -508,6 +512,7 @@ define('zJS', function () {
 		fpow: fpow, // fast squaring algorithm
 		swap: swap, // swap variables
 		isPowOf2: isPowOf2 // determining if an integer is a power of 2
+		isMinus0: isMinus0 // detect negative zeros
 	 };
 	 
 	 /**
