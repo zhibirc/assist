@@ -6,7 +6,7 @@
  *  @author zhibirc
  *  @license
  */
-define('zJS', function () {
+define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
     'use strict';
 
     var zJS = {},
@@ -362,7 +362,7 @@ define('zJS', function () {
 	 /** Get factorial with Tail call optimization. */
 	 factorial = function (n) {
 		 if (!isInt(n)) {
-			 throw new ValueError('factorial() only accepts integral values');
+			 throw new ValueError(ERRORS.math.factorial);
 		 }
 		 
 		 function _(n, acc) {
@@ -386,7 +386,7 @@ define('zJS', function () {
 		var ret = [], a = 0, b = 1, tmp;
 		 
 		if (!isInt(n)) {
-			return new ValueError('fibTo() only accepts integral values');
+			return new ValueError(ERRORS.math.fibTo);
 		}
 		 
 		while (n--) {
@@ -402,7 +402,7 @@ define('zJS', function () {
 	/** Get N-th Fibonacci number. */
 	fib = function (n) {
 		if (!isInt(n)) {
-			return new ValueError('fib() only accepts integral values');
+			return new ValueError(ERRORS.math.fib);
 		}
 		
 		let sqrt = Math.sqrt;
