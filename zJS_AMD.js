@@ -23,7 +23,7 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 		// DOM
 		fetch,
 		// UTILS
-		drawBounds, setZeroTimeout, typoGraph,
+		drawBounds, setZeroTimeout, typoGraph, origins,
 		// MATH
 		gcd, factorial, isFib, fibTo, fib, primes, swap, isPowOf2, isMinus0;
 		

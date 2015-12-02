@@ -8,7 +8,7 @@
  */
 import ERRORS from './zJS_errors_ES6.js';
     let zJS = {},
-		ValueError = Object.create(Error.prototype),
+		CallError = Object.create(Error.prototype),
 		domElemProto = Element.prototype,
 		objProto = Object.prototype,
 		arrProto = Array.prototype,
@@ -21,9 +21,9 @@ import ERRORS from './zJS_errors_ES6.js';
 		// DOM
 		fetch,
 		// UTILS
-		drawBounds, setZeroTimeout,
+		drawBounds, setZeroTimeout, typoGraph, origins,
 		// MATH
-		gcd, factorial, isFib, fibTo, fib, primes, swap, isPowOf2;
+		gcd, factorial, isFib, fibTo, fib, primes, swap, isPowOf2, isMinus0;
 		
 		zJS.dom = {};
 		zJS.util = {};
@@ -33,21 +33,44 @@ import ERRORS from './zJS_errors_ES6.js';
 	  |	Type detection helpers. |
 	  |-------------------------|*/
 	
+	/**
+	 *	Check that given value is undefined.
+	 *	@param {*} entity - Value for checking.
+	 */
 	function isUndef(entity) {
 		return typeof entity === 'undefined';
 	}
 	
+	/**
+	 *	Check that given value is function.
+	 *	@param {*} entity - Value for checking.
+	 */
 	function isFunc(entity) {
 		return typeof entity === 'function';
 	}
 	
+	/**
+	 *	Check that given value is integral number.
+	 *	@param {*} entity - Value for checking.
+	 */
 	function isInt(entity) {
 		return typeof entity === 'number' && entity % 1 === 0;
 	}
 	
-	/** Entry point to all DOM methods, gets element/elements for future usage. */
-	fetch = function (elements) {
+	/**
+	 *	Entry point to all DOM methods, gets element/elements for future usage.
+	 *	@param {(Object|Object[])} elements - Single DOM element or multiple DOM elements.
+	 */
+	fetch = function (...elements) {
+		let len = elements.length;
 		
+		if (!len) {
+			throw new CallError(); // TODO
+		} else if (len === 1) {
+			return elements[0];
+		} else {
+			return elements;
+		}
 	};
 	
     /**
@@ -333,7 +356,7 @@ import ERRORS from './zJS_errors_ES6.js';
 	 * Beautify with guillemets and dashes.
 	 * Select a node in your element inspector and run the following code in console.
 	 */
-	 (function (el) {
+	typoGraph = function (el) {
 		 el.value = el.value
 			// replace left-side double quotes
 		   .replace(/(^|\s)"/g, '$1«')
@@ -341,11 +364,25 @@ import ERRORS from './zJS_errors_ES6.js';
            .replace(/"(\s|[-.,:;?!]|$)/g, '»$1')
 		    // replace hyphen with a dash
            .replace(/(\s)-(\s)/g, '$1—$2');
-	 }($0 /* or $N*/));
+	};
 	
-    /** Find original values in an array. */
-	origins = function (arr) {
-		return Object.keys(arr.reduce(function(r, v) { return r[v] = 1, r; }, {}));
+    /**
+	 *	Find original values in an array, optionally preserve order.
+	 *	@param {Object[]} lst - Array with duplicates.
+	 *	@param {boolean} [preserveOrder=true] - Is it needed to preserve elements order.
+	 */
+	origins = function (lst, preserveOrder = true) {
+		let l = arguments.length;
+		
+		if (!l || l > 2 || !Array.isArray(lst) || ![true, false].some(v => v === preserveOrder)) {
+			throw new CallError(ERRORS.util.origins);
+		}
+		
+		if (preserveOrder) {
+			return Set(arr).forEach(v => r.push(v));
+		} else {
+			return Object.keys(arr.reduce((r, v) => r[v] = 1 && r, {})).map(Number);
+		}
 	};
 	
 	/** Minimize timeout. */
@@ -363,7 +400,7 @@ import ERRORS from './zJS_errors_ES6.js';
 			ctx = _ctx;
 			window.postMessage('', '*');
 		};
-	})(); 
+	})();
 	
 	/*|----------------------------------------------------------------------------------|
 	  | MATH functions and algorithms implemented as extensions of Math built-in object. |
@@ -377,7 +414,7 @@ import ERRORS from './zJS_errors_ES6.js';
 	 /** Get factorial with Tail call optimization. */
 	 factorial = function (n) {
 		 if (!isInt(n)) {
-			 throw new ValueError(ERRORS.math.factorial);
+			 throw new CallError(ERRORS.math.factorial);
 		 }
 		 
 		 function _(n, acc) {
@@ -401,7 +438,7 @@ import ERRORS from './zJS_errors_ES6.js';
 		var ret = [], a = 0, b = 1, tmp;
 		 
 		if (!isInt(n)) {
-			return new ValueError(ERRORS.math.fibTo);
+			return new CallError(ERRORS.math.fibTo);
 		}
 		 
 		while (n--) {
@@ -417,7 +454,7 @@ import ERRORS from './zJS_errors_ES6.js';
 	/** Get N-th Fibonacci number. */
 	fib = function (n) {
 		if (!isInt(n)) {
-			return new ValueError(ERRORS.math.fib);
+			return new CallError(ERRORS.math.fib);
 		}
 		
 		let sqrt = Math.sqrt;
