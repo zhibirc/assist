@@ -3,7 +3,9 @@ define(function () {
 	
 	const ERRORS = {
 		dom: {},
-		util: {},
+		util: {
+			origins: 'Syntax: origins(array[, preserveOrder])'
+		},
 		math: {
 			factorial: 'factorial() only accepts integral values',
 			fib: 'fib() only accepts integral values',

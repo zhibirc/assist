@@ -10,7 +10,7 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
     'use strict';
 
     let zJS = {},
-		ValueError = Object.create(Error.prototype),
+		CallError = Object.create(Error.prototype),
 		domElemProto = Element.prototype,
 		objProto = Object.prototype,
 		arrProto = Array.prototype,
@@ -67,7 +67,7 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 		let len = elements.length;
 		
 		if (!len) {
-			throw new ValueError(); // TODO
+			throw new CallError(); // TODO
 		} else if (len === 1) {
 			return elements[0];
 		} else {
@@ -368,9 +368,23 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
            .replace(/(\s)-(\s)/g, '$1—$2');
 	};
 	
-    /** Find original values in an array. */
-	origins = function (arr) {
-		return Object.keys(arr.reduce(function(r, v) { return r[v] = 1, r; }, {}));
+    /**
+	 *	Find original values in an array, optionally preserve order.
+	 *	@param {Object[]} lst - Array with duplicates.
+	 *	@param {boolean} [preserveOrder=true] - Is it needed to preserve elements order.
+	 */
+	origins = function (lst, preserveOrder = true) {
+		let l = arguments.length;
+		
+		if (!l || l > 2 || !Array.isArray(lst) || ![true, false].some(v => v === preserveOrder)) {
+			throw new CallError(ERRORS.util.origins);
+		}
+		
+		if (preserveOrder) {
+			return Set(arr).forEach(v => r.push(v));
+		} else {
+			return Object.keys(arr.reduce((r, v) => r[v] = 1 && r, {})).map(Number);
+		}
 	};
 	
 	/** Minimize timeout. */
@@ -402,7 +416,7 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 	 /** Get factorial with Tail call optimization. */
 	 factorial = function (n) {
 		 if (!isInt(n)) {
-			 throw new ValueError(ERRORS.math.factorial);
+			 throw new CallError(ERRORS.math.factorial);
 		 }
 		 
 		 function _(n, acc) {
@@ -426,7 +440,7 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 		var ret = [], a = 0, b = 1, tmp;
 		 
 		if (!isInt(n)) {
-			return new ValueError(ERRORS.math.fibTo);
+			return new CallError(ERRORS.math.fibTo);
 		}
 		 
 		while (n--) {
@@ -442,7 +456,7 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 	/** Get N-th Fibonacci number. */
 	fib = function (n) {
 		if (!isInt(n)) {
-			return new ValueError(ERRORS.math.fib);
+			return new CallError(ERRORS.math.fib);
 		}
 		
 		let sqrt = Math.sqrt;
