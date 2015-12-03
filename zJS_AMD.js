@@ -37,11 +37,12 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 	  |-------------------------|*/
 	
 	/**
-	 *	Check that given value is undefined.
+	 *	Check if given value is null or undefined.
 	 *	@param {*} entity - Value for checking.
 	 */
 	function isUndef(entity) {
-		return typeof entity === 'undefined';
+		const UNDEF;
+		return entity === null || entity === UNDEF;
 	}
 	
 	/**
@@ -62,10 +63,10 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 	
 	/**
 	 *	Check that given value is HTMLElement
-	 *	@param
+	 *	@param {*} entity - Value for checking.
 	 */
 	 function isHTML(entity) {
-		 
+		return entity.nodeType === 1 || entity instanceof HTMLCollection;
 	 }
 	
 	/**
@@ -73,11 +74,9 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 	 *	@param {(Object|Object[])} elements - Single DOM element or multiple DOM elements.
 	 */
 	fetch = function (...elements) {
-		let len = elements.length;
-		
-		if (!len) {
-			throw new CallError(); // TODO
-		} else if (len === 1) {
+		if (!elements.length || elements.some(v => isUndef(v) || !isHTML(v))) {
+			throw new CallError(ERRORS.dom.fetch);
+		} else if (len === 1) { // TODO
 			return elements[0];
 		} else {
 			return elements;

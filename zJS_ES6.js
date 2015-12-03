@@ -7,7 +7,8 @@
  *  @license
  */
 import ERRORS from './zJS_errors_ES6.js';
-    let zJS = {},
+	let zJS = {},
+		doc = document,
 		CallError = Object.create(Error.prototype),
 		domElemProto = Element.prototype,
 		objProto = Object.prototype,
@@ -21,7 +22,7 @@ import ERRORS from './zJS_errors_ES6.js';
 		// DOM
 		fetch,
 		// UTILS
-		drawBounds, setZeroTimeout, typoGraph, origins,
+		drawBounds, setZeroTimeout, typoGraph, origins, checkUAEngine, hasMathMLSupport,
 		// MATH
 		gcd, factorial, isFib, fibTo, fib, primes, swap, isPowOf2, isMinus0;
 		
@@ -34,11 +35,12 @@ import ERRORS from './zJS_errors_ES6.js';
 	  |-------------------------|*/
 	
 	/**
-	 *	Check that given value is undefined.
+	 *	Check if given value is null or undefined.
 	 *	@param {*} entity - Value for checking.
 	 */
 	function isUndef(entity) {
-		return typeof entity === 'undefined';
+		const UNDEF;
+		return entity === null || entity === UNDEF;
 	}
 	
 	/**
@@ -58,15 +60,21 @@ import ERRORS from './zJS_errors_ES6.js';
 	}
 	
 	/**
+	 *	Check that given value is HTMLElement
+	 *	@param {*} entity - Value for checking.
+	 */
+	 function isHTML(entity) {
+		return entity.nodeType === 1 || entity instanceof HTMLCollection;
+	 }
+	
+	/**
 	 *	Entry point to all DOM methods, gets element/elements for future usage.
 	 *	@param {(Object|Object[])} elements - Single DOM element or multiple DOM elements.
 	 */
 	fetch = function (...elements) {
-		let len = elements.length;
-		
-		if (!len) {
-			throw new CallError(); // TODO
-		} else if (len === 1) {
+		if (!elements.length || elements.some(v => isUndef(v) || !isHTML(v))) {
+			throw new CallError(ERRORS.dom.fetch);
+		} else if (len === 1) { // TODO
 			return elements[0];
 		} else {
 			return elements;
@@ -152,6 +160,33 @@ import ERRORS from './zJS_errors_ES6.js';
             console.log(this.basket);
         });
     }
+	
+	/**
+	 *	Detect the rendering engine.
+	 */
+	 checkUAEngine = function () {
+		let ua = navigator.userAgent;
+		
+		return {
+			isGecko: ~ua.indexOf('Gecko') && !~ua.indexOf('KHTML') && !~ua.indexOf('Trident'),
+			isWebKit: ~ua.indexOf('AppleWebKit') && !~ua.indexOf('Chrome')
+		};
+	 };
+	 
+	 /**
+	  *	Verify the MathML support.
+	  */
+	 hasMathMLSupport = function () {
+		let div = doc.createElement('div'),
+			box;
+  
+		div.innerHTML = '<math><mspace height="23px" width="77px"></math>';
+		doc.body.appendChild(div);
+		box = div.firstChild.firstChild.getBoundingClientRect();
+		doc.body.removeChild(div);
+		
+		return Math.abs(box.height - 23) < 2 && Math.abs(box.width - 77) < 2;
+	}
 
     /**
      * Adding outline borders to each element on the page.
