@@ -10,6 +10,7 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
     'use strict';
 
     let zJS = {},
+		doc = document,
 		CallError = Object.create(Error.prototype),
 		domElemProto = Element.prototype,
 		objProto = Object.prototype,
@@ -23,7 +24,7 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 		// DOM
 		fetch,
 		// UTILS
-		drawBounds, setZeroTimeout, typoGraph, origins,
+		drawBounds, setZeroTimeout, typoGraph, origins, checkUAEngine, hasMathMLSupport,
 		// MATH
 		gcd, factorial, isFib, fibTo, fib, primes, swap, isPowOf2, isMinus0;
 		
@@ -58,6 +59,14 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 	function isInt(entity) {
 		return typeof entity === 'number' && entity % 1 === 0;
 	}
+	
+	/**
+	 *	Check that given value is HTMLElement
+	 *	@param
+	 */
+	 function isHTML(entity) {
+		 
+	 }
 	
 	/**
 	 *	Entry point to all DOM methods, gets element/elements for future usage.
@@ -154,6 +163,33 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
             console.log(this.basket);
         });
     }
+	
+	/**
+	 *	Detect the rendering engine.
+	 */
+	 checkUAEngine = function () {
+		let ua = navigator.userAgent;
+		
+		return {
+			isGecko: ~ua.indexOf('Gecko') && !~ua.indexOf('KHTML') && !~ua.indexOf('Trident'),
+			isWebKit: ~ua.indexOf('AppleWebKit') && !~ua.indexOf('Chrome')
+		};
+	 };
+	 
+	 /**
+	  *	Verify the MathML support.
+	  */
+	 hasMathMLSupport = function () {
+		let div = doc.createElement('div'),
+			box;
+  
+		div.innerHTML = '<math><mspace height="23px" width="77px"></math>';
+		doc.body.appendChild(div);
+		box = div.firstChild.firstChild.getBoundingClientRect();
+		doc.body.removeChild(div);
+		
+		return Math.abs(box.height - 23) < 2 && Math.abs(box.width - 77) < 2;
+	}
 
     /**
      * Adding outline borders to each element on the page.

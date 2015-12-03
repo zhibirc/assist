@@ -2,7 +2,9 @@ define(function () {
 	'use strict';
 	
 	const ERRORS = {
-		dom: {},
+		dom: {
+			fetch: 'Syntax: fetch()'
+		},
 		util: {
 			origins: 'Syntax: origins(array[, preserveOrder])'
 		},
