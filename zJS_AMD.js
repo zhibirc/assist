@@ -12,17 +12,12 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
     let zJS = {},
 		doc = document,
 		CallError = Object.create(Error.prototype),
-		domElemProto = Element.prototype,
 		objProto = Object.prototype,
 		arrProto = Array.prototype,
 		strProto = String.prototype,
 		fnProto = Function.prototype,
-        errors = {
-            hide: 'Argument incorrect! Allowed 0 and 1 only.',
-            remove: 'Argument incorrect! Allowed "chain" and "save" (without flag is equivalent) only.'
-        },
 		// DOM
-		Fetch, hide,
+		fetch, hide, remove, last,
 		// UTILS
 		drawBounds, setZeroTimeout, typoGraph, origins, checkUAEngine, hasMathMLSupport,
 		// MATH
@@ -68,50 +63,39 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 		return entity.nodeType === 1 || entity instanceof HTMLCollection;
 	 }
 	
-	let DOMElementExtended = Object.create(HTMLElement.prototype, {
-		hide: { value: hide }
+	let DOMElementExtendedAPI = {
+		hide: hide
 	});
-	
-	/** Extend fetched by Fetch() elements with new features. */
-	Fetch.prototype = DOMElementExtended;
 	
 	/**
 	 *	Entry point to all DOM methods, gets element/elements for future usage.
 	 *	@param {(Object|Object[])} elements - Single DOM element or multiple DOM elements.
 	 */
-	Fetch = function (element) {
+	fetch = function (element) {
 		if (arguments.length !== 1 || isUndef(element) || !isHTML(element)) {
 			throw new CallError(ERRORS.dom.fetch);
 		}
 		
-		let DOMElement = Object.create(Fetch.prototype);
+		DOMElementExtendedAPI.__proto__ = element.__proto__;
+		element.__proto__ = DOMElementExtendedAPI;
 		
-
-		
-		return DOMElement;
+		return element;
 	};
 	
     /**
-     * Method <_remove_> for DOM elements. Remove particular element and additionally accepts two various behaviours.
-     * Flag "save" (or without flag at all) means that removed element returns.
-     * Flag "chain" means that the parent element returns to build methods chains.
-     *
-     * @author zhibirc
-     * @param {String} aim - Must be "save", "chain".
      * @returns {Object}
      */
-    domElemProto._remove_ = function (aim) {
-        var parent;
+    remove = function () {
+        if (arguments.length) {
+			throw new CallError(ERRORS.dom.remove);
+		}
 		
-        if (aim === 'save') {
-            return this.parentNode.removeChild(this);
-        } else if (aim === 'chain') {
-            parent = this.parentNode;
-            parent.removeChild(this);
-            return parent;
-        } else {
-            throw new SyntaxError(errors.remove);
-        }
+		let parent;
+		
+		parent = this.parentNode;
+        parent.removeChild(this);
+		
+        return parent;
     };
 
     /**
@@ -139,11 +123,9 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 
     /**
      * Implement <last> method for collections of DOM elements.
-     *
-     * @author zhibirc
      * @returns {Object}
      */
-    NodeList.prototype._last_ = HTMLCollection.prototype._last_ = function () {
+    last = function () {
         return this[this.length - 1];
     };
 

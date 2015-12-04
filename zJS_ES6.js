@@ -10,17 +10,12 @@ import ERRORS from './zJS_errors_ES6.js';
 	let zJS = {},
 		doc = document,
 		CallError = Object.create(Error.prototype),
-		domElemProto = Element.prototype,
 		objProto = Object.prototype,
 		arrProto = Array.prototype,
 		strProto = String.prototype,
 		fnProto = Function.prototype,
-        errors = {
-            hide: 'Argument incorrect! Allowed 0 and 1 only.',
-            remove: 'Argument incorrect! Allowed "chain" and "save" (without flag is equivalent) only.'
-        },
 		// DOM
-		fetch,
+		fetch, hide, remove, last,
 		// UTILS
 		drawBounds, setZeroTimeout, typoGraph, origins, checkUAEngine, hasMathMLSupport,
 		// MATH
@@ -39,8 +34,7 @@ import ERRORS from './zJS_errors_ES6.js';
 	 *	@param {*} entity - Value for checking.
 	 */
 	function isUndef(entity) {
-		const UNDEF;
-		return entity === null || entity === UNDEF;
+		return entity === null || typeof entity === 'undefined';
 	}
 	
 	/**
@@ -67,41 +61,39 @@ import ERRORS from './zJS_errors_ES6.js';
 		return entity.nodeType === 1 || entity instanceof HTMLCollection;
 	 }
 	
+	let DOMElementExtendedAPI = {
+		hide: hide
+	});
+	
 	/**
 	 *	Entry point to all DOM methods, gets element/elements for future usage.
 	 *	@param {(Object|Object[])} elements - Single DOM element or multiple DOM elements.
 	 */
-	fetch = function (...elements) {
-		if (!elements.length || elements.some(v => isUndef(v) || !isHTML(v))) {
+	fetch = function (element) {
+		if (arguments.length !== 1 || isUndef(element) || !isHTML(element)) {
 			throw new CallError(ERRORS.dom.fetch);
-		} else if (len === 1) { // TODO
-			return elements[0];
-		} else {
-			return elements;
 		}
+		
+		DOMElementExtendedAPI.__proto__ = element.__proto__;
+		element.__proto__ = DOMElementExtendedAPI;
+		
+		return element;
 	};
 	
     /**
-     * Method <_remove_> for DOM elements. Remove particular element and additionally accepts two various behaviours.
-     * Flag "save" (or without flag at all) means that removed element returns.
-     * Flag "chain" means that the parent element returns to build methods chains.
-     *
-     * @author zhibirc
-     * @param {String} aim - Must be "save", "chain".
      * @returns {Object}
      */
-    domElemProto._remove_ = function (aim) {
-        var parent;
+    remove = function () {
+        if (arguments.length) {
+			throw new CallError(ERRORS.dom.remove);
+		}
 		
-        if (aim === 'save') {
-            return this.parentNode.removeChild(this);
-        } else if (aim === 'chain') {
-            parent = this.parentNode;
-            parent.removeChild(this);
-            return parent;
-        } else {
-            throw new SyntaxError(errors.remove);
-        }
+		let parent;
+		
+		parent = this.parentNode;
+        parent.removeChild(this);
+		
+        return parent;
     };
 
     /**
@@ -113,7 +105,7 @@ import ERRORS from './zJS_errors_ES6.js';
      * @param {Number} level - Must be 0 or 1.
      * @returns {Object}
      */
-    domElemProto._hide_ = function (level) {
+    hide = function (level) {
         switch (level)  {
             case 0:
                 this.style.visibility = 'hidden';
@@ -129,11 +121,9 @@ import ERRORS from './zJS_errors_ES6.js';
 
     /**
      * Implement <last> method for collections of DOM elements.
-     *
-     * @author zhibirc
      * @returns {Object}
      */
-    NodeList.prototype._last_ = HTMLCollection.prototype._last_ = function () {
+    last = function () {
         return this[this.length - 1];
     };
 
