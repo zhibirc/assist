@@ -22,7 +22,7 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
             remove: 'Argument incorrect! Allowed "chain" and "save" (without flag is equivalent) only.'
         },
 		// DOM
-		fetch,
+		Fetch, hide,
 		// UTILS
 		drawBounds, setZeroTimeout, typoGraph, origins, checkUAEngine, hasMathMLSupport,
 		// MATH
@@ -41,8 +41,7 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 	 *	@param {*} entity - Value for checking.
 	 */
 	function isUndef(entity) {
-		const UNDEF;
-		return entity === null || entity === UNDEF;
+		return entity === null || typeof entity === 'undefined';
 	}
 	
 	/**
@@ -69,18 +68,27 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
 		return entity.nodeType === 1 || entity instanceof HTMLCollection;
 	 }
 	
+	let DOMElementExtended = Object.create(HTMLElement.prototype, {
+		hide: { value: hide }
+	});
+	
+	/** Extend fetched by Fetch() elements with new features. */
+	Fetch.prototype = DOMElementExtended;
+	
 	/**
 	 *	Entry point to all DOM methods, gets element/elements for future usage.
 	 *	@param {(Object|Object[])} elements - Single DOM element or multiple DOM elements.
 	 */
-	fetch = function (...elements) {
-		if (!elements.length || elements.some(v => isUndef(v) || !isHTML(v))) {
+	Fetch = function (element) {
+		if (arguments.length !== 1 || isUndef(element) || !isHTML(element)) {
 			throw new CallError(ERRORS.dom.fetch);
-		} else if (len === 1) { // TODO
-			return elements[0];
-		} else {
-			return elements;
 		}
+		
+		let DOMElement = Object.create(Fetch.prototype);
+		
+
+		
+		return DOMElement;
 	};
 	
     /**
@@ -115,7 +123,7 @@ define('zJS', ['./zJS_errors_AMD'], function (ERRORS) {
      * @param {Number} level - Must be 0 or 1.
      * @returns {Object}
      */
-    domElemProto._hide_ = function (level) {
+    hide = function (level) {
         switch (level)  {
             case 0:
                 this.style.visibility = 'hidden';
