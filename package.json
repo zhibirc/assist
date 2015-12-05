@@ -1,21 +1,21 @@
 {
-  "name": "zjs",
+  "name": "assist",
   "version": "1.0.0",
-  "description": "zlibjs\r ======",
-  "main": "zJS_AMD.js",
+  "description": "assist JavaScript Library",
+  "main": "assist.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zhibirc/zlibjs.git"
+    "url": "git+https://github.com/zhibirc/assist.git"
   },
   "author": "zhibirc",
   "license": "JSON",
   "bugs": {
-    "url": "https://github.com/zhibirc/zlibjs/issues"
+    "url": "https://github.com/zhibirc/assist/issues"
   },
-  "homepage": "https://github.com/zhibirc/zlibjs#readme",
+  "homepage": "https://github.com/zhibirc/assist#readme",
   "dependencies": {
     "jasmine-core": "^2.4.1",
     "karma": "^0.13.15",

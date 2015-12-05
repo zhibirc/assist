@@ -1,16 +1,15 @@
 {
-  "name": "zjs",
-  "homepage": "https://github.com/zhibirc/zlibjs",
+  "name": "assist",
+  "description": "assist JavaScript Library",
+  "main": "assist.js",
   "authors": [
     "zhibirc"
   ],
-  "description": "",
-  "main": "",
+  "license": "JSON",
+  "homepage": "https://github.com/zhibirc/assist",
   "moduleType": [
-    "amd",
     "es6"
   ],
-  "license": "JSON",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -19,6 +18,7 @@
     "tests"
   ],
   "dependencies": {
+    "grunt": "~0.4.5",
     "jasmine-core": "jasmine#~2.4.1"
   }
 }
